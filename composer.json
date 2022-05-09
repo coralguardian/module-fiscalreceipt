@@ -1,0 +1,19 @@
+{
+    "name": "d4rk0snet/coral-fiscalreceipt",
+    "description": "Plugin métier pour la gestion des recus fiscaux au sein de l'association de préservation des coraux Coral-Guardian",
+    "type": "plugin",
+    "autoload": {
+        "psr-4": {
+            "D4rk0snet\\CoralFiscalreceipt\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Grégory COLLIN",
+            "email": "gregory@d4rk0s.net"
+        }
+    ],
+    "require": {
+        "twig/twig": "^3.3"
+    }
+}

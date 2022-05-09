@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Reçu fiscal</title>
+    <link href="{{ assets_path ~ "css/receipt.css" }}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+{#    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700" rel="stylesheet">#}
+</head>
+
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="logo col-4">
+            <img src="{{ assets_path ~ "img/coral-guardian-black.png" }}" alt="">
+        </div>
+        <div class="col-6">
+            <h3 class="">RECU FISCAL</h3>
+            <p class="bold">Articles {{ articles}} du code général des impôts</p>
+            <p>Numéro d'ordre reçu : {{ receipt.code }}</p>
+        </div>
+    </div>
+
+    {% set customer = receipt.order.customer %}
+    <div class="row mt-2">
+        <div class="col-7"></div><div class="col-5">
+            <p class="bold">{{ customer.fullName }}</p>
+            <p>{{ customer.address }}</p>
+            <p>{{ customer.postalCode }} {{ customer.city }}</p>
+
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-3">
+            <p class="bold underline">DONATEUR</p>
+            <p class="bold">{{ customer.fullName }}</p>
+            <p>{{ customer.address }}</p>
+            <p>{{ customer.postalCode }} {{ customer.city }}</p>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-3">
+            <p class="bold underline">BENEFICIAIRE</p>
+            <p class="bold">Coral Guardian</p>
+            <p>3 rue de la Pierrée</p>
+            <p>91470 Limours</p>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <p><span class="bold">Type d'organisme : </span><span>Association loi 1901</span></p>
+            <p><span class="bold">Qualité de l'organisme : </span><span>Organisme d'intérêt général</span></p>
+            <p><span class="bold">Objet : </span><span>Coral Guardian protège et restaure les écosystèmes coralliens par l'implication des popuplations locales</span></p>
+        </div>
+    </div>
+
+    <div class="row mt-1">
+        <div class="col-12">
+            <p>
+                Le bénéficiaire reconnaît avoir reçu au titre des dons et versements, ouvrant droit à réduction d'impôt de
+                {{ fiscalReduction }}%, la somme de <span class="bold">{{ priceWord }} euros (***{{ receipt.order.price }}*** EUR)</span>.
+            </p>
+        </div>
+    </div>
+
+    <div class="row mt-4" style="padding-left: 2%">
+        <div class="col-12">
+            <p><span class="bold">Date du versement : </span><span>Association loi 1901</span></p>
+            <p><span class="bold">Mode de versement : </span><span>PAIEMENT PAR {{ paymentMethod }}</span></p>
+            <p><span class="bold">Forme du don : </span><span>Don manuel</span></p>
+            <p><span class="bold">Nature du don : </span><span>Numéraire</span></p>
+        </div>
+        <div class="col-12 mt-3">
+            <p>
+                Le bénéficiaire certifie sur l'honneur que les dons et versements qu'il reçoit ouvrent droit à la réduction
+                d'impôt prévue aux articles {{ articles}} du code général des impôts.
+            </p>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-9"></div><div class="col-3">
+            <p>Le {{ date }},</p>
+            <p>Olivier Detournay</p>
+            <img src="{{ assets_path ~ "img/OD-sign-tampon2.png" }}" alt="">
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
