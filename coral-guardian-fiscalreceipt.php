@@ -9,3 +9,4 @@
  * Author URI:
  * Licence: GPLv2
  */
+do_action(\Hyperion\RestAPI\Plugin::ADD_API_ENDPOINT_ACTION, new \D4rk0snet\CoralFiscalreceipt\Endpoint\GetFiscalReceiptEndpoint());

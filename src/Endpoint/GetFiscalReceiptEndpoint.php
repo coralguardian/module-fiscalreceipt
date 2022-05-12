@@ -2,7 +2,7 @@
 
 namespace D4rk0snet\CoralFiscalreceipt\Endpoint;
 
-use D4rk0snet\CoralOrder\Entity\StandardOrderEntity;
+use D4rk0snet\CoralOrder\Entity\AdoptionEntity;
 use Hyperion\Api2pdf\Plugin;
 use Hyperion\Doctrine\DoctrineService;
 use Hyperion\RestAPI\APIEnpointAbstract;
@@ -23,7 +23,7 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
             return APIManagement::APIError('Missing order uuid', 400);
         }
 
-        $order = DoctrineService::getEntityManager()->getRepository(StandardOrderEntity::class)->find($orderUUID);
+        $order = DoctrineService::getEntityManager()->getRepository(AdoptionEntity::class)->find($orderUUID);
         if($order === null) {
             return APIManagement::APIError('Order not found', 404);
         }

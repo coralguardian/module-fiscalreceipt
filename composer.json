@@ -1,12 +1,25 @@
 {
     "name": "d4rk0snet/coral-fiscalreceipt",
     "description": "Plugin métier pour la gestion des recus fiscaux au sein de l'association de préservation des coraux Coral-Guardian",
-    "type": "plugin",
+    "type": "wordpress-plugin",
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "D4rk0snet\\CoralFiscalreceipt\\": "src/"
         }
     },
+    "repositories": [
+        {
+            "type" : "vcs",
+            "url": "git@github.com:ds-hyperion/api2pdf.git",
+            "no-api": true
+        },
+        {
+            "type" : "vcs",
+            "url": "git@github.com:ds-hyperion/restapi.git",
+            "no-api": true
+        }
+    ],
     "authors": [
         {
             "name": "Grégory COLLIN",
@@ -14,6 +27,8 @@
         }
     ],
     "require": {
-        "twig/twig": "^3.3"
+        "twig/twig": "^3.3",
+        "hyperion/api2pdf": "dev-dev",
+        "hyperion/restapi": "dev-dev"
     }
 }
