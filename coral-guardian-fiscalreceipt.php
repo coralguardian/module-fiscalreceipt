@@ -9,4 +9,4 @@
  * Author URI:
  * Licence: GPLv2
  */
-add_action('plugins_loaded', 'D4rk0snet\Adoption\Plugin::launchActions');
+add_action('plugins_loaded', 'D4rk0snet\FiscalReceipt\Plugin::launchActions');
