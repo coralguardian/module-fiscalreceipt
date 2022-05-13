@@ -5,7 +5,7 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "D4rk0snet\\Fiscalreceipt\\": "src/"
+            "D4rk0snet\\FiscalReceipt\\": "src/"
         }
     },
     "repositories": [
