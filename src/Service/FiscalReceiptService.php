@@ -1,6 +1,6 @@
 <?php
 
-namespace D4rk0snet\FiscalReceipt;
+namespace D4rk0snet\FiscalReceipt\Service;
 
 use D4rk0snet\FiscalReceipt\Model\FiscalReceiptModel;
 use Hyperion\Api2pdf\Service\Api2PdfService;
