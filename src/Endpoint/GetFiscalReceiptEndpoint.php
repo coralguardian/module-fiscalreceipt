@@ -43,9 +43,9 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
             orderUuid: $orderUUID
         );
 
-        FiscalReceiptService::createReceipt($fiscalReceiptModel);
+        $fileURL = FiscalReceiptService::createReceipt($fiscalReceiptModel);
 
-        return APIManagement::APIOk();
+        return APIManagement::APIClientDownloadWithURL($fileURL);
     }
 
     public static function getEndpoint(): string

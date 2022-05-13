@@ -53,13 +53,12 @@ class FiscalReceiptModel
             'fiscalReductionPercentage' => $this->fiscalReductionPercentage,
             'priceWord' => $this->priceWord,
             'price' => $this->price,
-            'date' => $this->date
+            'date' => $this->date->format("d-m-Y")
         ];
     }
 
-
-    public function getOrderUuid(): string
+    public function getReceiptCode(): string
     {
-        return $this->orderUuid;
+        return $this->receiptCode;
     }
 }

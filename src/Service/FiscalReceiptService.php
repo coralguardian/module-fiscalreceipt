@@ -9,21 +9,18 @@ use Twig\Loader\FilesystemLoader;
 
 class FiscalReceiptService
 {
-    public static function createReceipt(FiscalReceiptModel $fiscalReceiptModel)
+    public static function createReceipt(FiscalReceiptModel $fiscalReceiptModel) : string
     {
         // Generate fiscal receipt
         $loader = new FilesystemLoader(__DIR__."/../Template");
         $twig = new Environment($loader); // @todo : Activer le cache
 
         $html = $twig->load('receipt.twig')->render($fiscalReceiptModel->toArray());
-        $fileUrl = Api2PdfService::convertHtmlToPdf(
+
+        return Api2PdfService::convertHtmlToPdf(
             $html,
             false,
-            "fs-".$fiscalReceiptModel->getOrderUuid().".pdf"
+            "receipt-".$fiscalReceiptModel->getReceiptCode().".pdf"
         );
-
-        var_dump($fileUrl); die;
-
-
     }
 }
