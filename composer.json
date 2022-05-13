@@ -1,11 +1,11 @@
 {
-    "name": "d4rk0snet/coral-fiscalreceipt",
+    "name": "d4rk0snet/fiscalreceipt",
     "description": "Plugin métier pour la gestion des recus fiscaux au sein de l'association de préservation des coraux Coral-Guardian",
     "type": "wordpress-plugin",
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "D4rk0snet\\CoralFiscalreceipt\\": "src/"
+            "D4rk0snet\\Fiscalreceipt\\": "src/"
         }
     },
     "repositories": [

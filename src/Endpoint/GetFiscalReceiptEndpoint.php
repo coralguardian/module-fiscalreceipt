@@ -1,14 +1,12 @@
 <?php
 
-namespace D4rk0snet\CoralFiscalreceipt\Endpoint;
+namespace D4rk0snet\FiscalReceipt;
 
-use D4rk0snet\CoralOrder\Entity\AdoptionEntity;
-use Hyperion\Api2pdf\Plugin;
-use Hyperion\Doctrine\DoctrineService;
+use D4rk0snet\Adoption\Entity\AdoptionEntity;
+use D4rk0snet\FiscalReceipt\Model\FiscalReceiptModel;
+use Hyperion\Doctrine\Service\DoctrineService;
 use Hyperion\RestAPI\APIEnpointAbstract;
 use Hyperion\RestAPI\APIManagement;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -23,18 +21,30 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
             return APIManagement::APIError('Missing order uuid', 400);
         }
 
+        // @todo : faire la recherche ensuite dans les dons si non trouvé
+        /** @var AdoptionEntity $order */
         $order = DoctrineService::getEntityManager()->getRepository(AdoptionEntity::class)->find($orderUUID);
         if($order === null) {
             return APIManagement::APIError('Order not found', 404);
         }
 
-        // Generate fiscal receipt
-        $loader = new FilesystemLoader(__DIR__."/../Template");
-        $twig = new Environment($loader); // @todo : Activer le cache
+        $fiscalReceiptModel = new FiscalReceiptModel(
+            articles: '45/407',
+            receiptCode: 1,
+            customerFullName: $order->getFirstname(). " ".$order->getLastname(),
+            customerAddress: $order->getAddress(),
+            customerPostalCode: "xxx",
+            customerCity: $order->getCity(),
+            fiscalReductionPercentage: 60,
+            priceWord: "soixante",
+            price: $order->getAmount(),
+            date: new \DateTime(),
+            orderUuid: $orderUUID
+        );
 
-        $html = $twig->load('receipt.twig')->render([]);
-        do_action(Plugin::API2PDF_APIKEY_OPTION,$html, false, 'fiscalReceipt.pdf');
-        die;
+        FiscalReceiptService::createReceipt($fiscalReceiptModel);
+
+        return APIManagement::APIOk();
     }
 
     public static function getEndpoint(): string
