@@ -45,7 +45,7 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
 
         $fileURL = FiscalReceiptService::createReceipt($fiscalReceiptModel);
 
-        return APIManagement::APIClientDownloadWithURL($fileURL);
+        return APIManagement::APIClientDownloadWithURL($fileURL, "receipt-coralguardian-".$fiscalReceiptModel->getReceiptCode().".pdf");
     }
 
     public static function getEndpoint(): string
