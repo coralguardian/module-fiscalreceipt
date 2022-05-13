@@ -1,8 +1,9 @@
 <?php
 
-namespace D4rk0snet\FiscalReceipt;
+namespace D4rk0snet\FiscalReceipt\Endpoint;
 
 use D4rk0snet\Adoption\Entity\AdoptionEntity;
+use D4rk0snet\FiscalReceipt\FiscalReceiptService;
 use D4rk0snet\FiscalReceipt\Model\FiscalReceiptModel;
 use Hyperion\Doctrine\Service\DoctrineService;
 use Hyperion\RestAPI\APIEnpointAbstract;
