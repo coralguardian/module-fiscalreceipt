@@ -15,7 +15,13 @@ class FiscalReceiptService
         $loader = new FilesystemLoader(__DIR__."/../Template");
         $twig = new Environment($loader); // @todo : Activer le cache
 
-        $html = $twig->load('receipt.twig')->render($fiscalReceiptModel->toArray());
+        $html = $twig->load('receipt.twig')->render(
+            [
+                'data' => $fiscalReceiptModel->toArray(),
+                'stampImg' => base64_encode(file_get_contents(__DIR__."/../Template/img/stamp.png")),
+                'logoImg' => base64_encode(file_get_contents(__DIR__."/../Template/img/logo.png"))
+            ]
+        );
 
         return Api2PdfService::convertHtmlToPdf(
             $html,

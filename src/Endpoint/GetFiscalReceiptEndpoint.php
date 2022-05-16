@@ -18,14 +18,14 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
     public static function callback(WP_REST_Request $request): WP_REST_Response
     {
         $orderUUID = $request->get_param(self::ORDER_UUID_PARAM);
-        if($orderUUID === null) {
+        if ($orderUUID === null) {
             return APIManagement::APIError('Missing order uuid', 400);
         }
 
         // @todo : faire la recherche ensuite dans les dons si non trouvé
         /** @var AdoptionEntity $order */
         $order = DoctrineService::getEntityManager()->getRepository(AdoptionEntity::class)->find($orderUUID);
-        if($order === null) {
+        if ($order === null) {
             return APIManagement::APIError('Order not found', 404);
         }
 
@@ -40,7 +40,8 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
             priceWord: "soixante",
             price: $order->getAmount(),
             date: new \DateTime(),
-            orderUuid: $orderUUID
+            orderUuid: $orderUUID,
+            paymentMethod: 'Carte bancaire'
         );
 
         $fileURL = FiscalReceiptService::createReceipt($fiscalReceiptModel);

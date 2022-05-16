@@ -14,20 +14,23 @@ class FiscalReceiptModel
     private float $fiscalReductionPercentage;
     private string $priceWord;
     private float $price;
+    private string $paymentMethod;
     private \DateTime $date;
 
-    public function __construct(string    $articles,
-                                string    $receiptCode,
-                                string    $customerFullName,
-                                string    $customerAddress,
-                                string    $customerPostalCode,
-                                string    $customerCity,
-                                float     $fiscalReductionPercentage,
-                                string    $priceWord,
-                                float     $price,
-                                \DateTime $date,
-                                string $orderUuid)
-    {
+    public function __construct(
+        string    $articles,
+        string    $receiptCode,
+        string    $customerFullName,
+        string    $customerAddress,
+        string    $customerPostalCode,
+        string    $customerCity,
+        float     $fiscalReductionPercentage,
+        string    $paymentMethod,
+        string    $priceWord,
+        float     $price,
+        \DateTime $date,
+        string $orderUuid
+    ) {
         $this->articles = $articles;
         $this->receiptCode = $receiptCode;
         $this->customerFullName = $customerFullName;
@@ -38,6 +41,7 @@ class FiscalReceiptModel
         $this->priceWord = $priceWord;
         $this->price = $price;
         $this->date = $date;
+        $this->paymentMethod = $paymentMethod;
         $this->orderUuid = $orderUuid;
     }
 
@@ -53,6 +57,7 @@ class FiscalReceiptModel
             'fiscalReductionPercentage' => $this->fiscalReductionPercentage,
             'priceWord' => $this->priceWord,
             'price' => $this->price,
+            'paymentMethod' => $this->paymentMethod,
             'date' => $this->date->format("d-m-Y")
         ];
     }
