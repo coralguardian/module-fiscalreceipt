@@ -13,7 +13,7 @@ use WP_REST_Response;
 
 class GetFiscalReceiptEndpoint extends APIEnpointAbstract
 {
-    private const ORDER_UUID_PARAM = 'order_uuid';
+    public const ORDER_UUID_PARAM = 'order_uuid';
 
     public static function callback(WP_REST_Request $request): WP_REST_Response
     {
