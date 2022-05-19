@@ -25,49 +25,53 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
             return APIManagement::APIError('Missing order uuid', 400);
         }
 
-        // @todo : faire la recherche ensuite dans les dons si non trouvé
-        /** @var DonationEntity $order */
-        $order = DoctrineService::getEntityManager()->getRepository(DonationEntity::class)->find($orderUUID);
-        if ($order === null) {
-            return APIManagement::APIError('Order not found', 404);
+        try {
+            // @todo : faire la recherche ensuite dans les dons si non trouvé
+            /** @var DonationEntity $order */
+            $order = DoctrineService::getEntityManager()->getRepository(DonationEntity::class)->find($orderUUID);
+            if ($order === null) {
+                return APIManagement::APIError('Order not found', 404);
+            }
+
+            $customer = $order->getCustomer();
+
+            if ($customer instanceof IndividualCustomerEntity) {
+                $fiscalReceiptModel = new FiscalReceiptModel(
+                    articles: '45/407',
+                    receiptCode: 1,
+                    customerFullName: $customer->getFirstname() . " " . $customer->getLastname(),
+                    customerAddress: $customer->getAddress(),
+                    customerPostalCode: "xxx",
+                    customerCity: $customer->getCity(),
+                    fiscalReductionPercentage: 60,
+                    paymentMethod: 'Carte bancaire',
+                    priceWord: "soixante",
+                    price: $order->getAmount(),
+                    date: new \DateTime(),
+                    orderUuid: $orderUUID
+                );
+            } else {
+                /** @var CompanyCustomerEntity $customer */
+                $fiscalReceiptModel = new FiscalReceiptModel(
+                    articles: '45/407',
+                    receiptCode: 1,
+                    customerFullName: $customer->getCompanyName(),
+                    customerAddress: $customer->getAddress(),
+                    customerPostalCode: "xxx",
+                    customerCity: $customer->getCity(),
+                    fiscalReductionPercentage: 60,
+                    paymentMethod: 'Carte bancaire',
+                    priceWord: "soixante",
+                    price: $order->getAmount(),
+                    date: new \DateTime(),
+                    orderUuid: $orderUUID
+                );
+            }
+
+            $fileURL = FiscalReceiptService::createReceipt($fiscalReceiptModel);
+        } catch (\Exception $exception) {
+            return APIManagement::APIError("Not found",404);
         }
-
-        $customer = $order->getCustomer();
-
-        if($customer instanceof IndividualCustomerEntity) {
-            $fiscalReceiptModel = new FiscalReceiptModel(
-                articles: '45/407',
-                receiptCode: 1,
-                customerFullName: $customer->getFirstname() . " " . $customer->getLastname(),
-                customerAddress: $customer->getAddress(),
-                customerPostalCode: "xxx",
-                customerCity: $customer->getCity(),
-                fiscalReductionPercentage: 60,
-                paymentMethod: 'Carte bancaire',
-                priceWord: "soixante",
-                price: $order->getAmount(),
-                date: new \DateTime(),
-                orderUuid: $orderUUID
-            );
-        } else {
-            /** @var CompanyCustomerEntity $customer */
-            $fiscalReceiptModel = new FiscalReceiptModel(
-                articles: '45/407',
-                receiptCode: 1,
-                customerFullName: $customer->getCompanyName(),
-                customerAddress: $customer->getAddress(),
-                customerPostalCode: "xxx",
-                customerCity: $customer->getCity(),
-                fiscalReductionPercentage: 60,
-                paymentMethod: 'Carte bancaire',
-                priceWord: "soixante",
-                price: $order->getAmount(),
-                date: new \DateTime(),
-                orderUuid: $orderUUID
-            );
-        }
-
-        $fileURL = FiscalReceiptService::createReceipt($fiscalReceiptModel);
 
         return APIManagement::APIClientDownloadWithURL($fileURL, "receipt-coralguardian-".$fiscalReceiptModel->getReceiptCode().".pdf");
     }
