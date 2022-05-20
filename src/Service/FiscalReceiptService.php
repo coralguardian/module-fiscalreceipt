@@ -3,6 +3,7 @@
 namespace D4rk0snet\FiscalReceipt\Service;
 
 use D4rk0snet\FiscalReceipt\Model\FiscalReceiptModel;
+use D4rk0snet\FiscalReceipt\Plugin;
 use Hyperion\Api2pdf\Service\Api2PdfService;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -22,6 +23,9 @@ class FiscalReceiptService
                 'logoImg' => base64_encode(file_get_contents(__DIR__."/../Template/img/logo.png"))
             ]
         );
+
+        // Incrémentation du code des reçus
+        update_option(Plugin::NEXT_RECEIPT_NUM, (int) get_option(Plugin::NEXT_RECEIPT_NUM) + 1);
 
         return Api2PdfService::convertHtmlToPdf(
             $html,
