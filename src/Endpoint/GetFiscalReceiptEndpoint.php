@@ -35,6 +35,10 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
                 return APIManagement::APIError('Order not found', 404);
             }
 
+            if(!$order->isPaid()) {
+                return APIManagement::APIError('Order not paid, can not generate fiscal receipt', 400);
+            }
+
             $customer = $order->getCustomer();
             $nf2 = new NumberFormatter(Language::FR->value, NumberFormatter::SPELLOUT);
 
