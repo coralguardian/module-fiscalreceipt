@@ -28,11 +28,12 @@ class FiscalReceiptService
         );
 
         // Incrémentation du code des reçus si on l'a généré
-        if(!$order->getFiscalReceiptNumber()) {
-            $order->setFiscalReceiptNumber(Plugin::NEXT_RECEIPT_NUM);
+        if($order->getFiscalReceiptNumber() === null) {
+            $currentReceiptNum = (int) get_option(Plugin::NEXT_RECEIPT_NUM);
+            $order->setFiscalReceiptNumber($currentReceiptNum);
             DoctrineService::getEntityManager()->flush();
 
-            update_option(Plugin::NEXT_RECEIPT_NUM, (int)get_option(Plugin::NEXT_RECEIPT_NUM) + 1);
+            update_option(Plugin::NEXT_RECEIPT_NUM, $currentReceiptNum + 1);
         }
 
         return Api2PdfService::convertHtmlToPdf(
