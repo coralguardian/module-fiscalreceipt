@@ -2,6 +2,7 @@
 
 namespace D4rk0snet\FiscalReceipt\Service;
 
+use D4rk0snet\FiscalReceipt\Endpoint\GetFiscalReceiptEndpoint;
 use D4rk0snet\FiscalReceipt\Model\FiscalReceiptModel;
 use D4rk0snet\FiscalReceipt\Plugin;
 use Hyperion\Api2pdf\Service\Api2PdfService;
@@ -34,5 +35,12 @@ class FiscalReceiptService
             false,
             "receipt-".$fiscalReceiptModel->getReceiptCode().".pdf"
         );
+    }
+
+    public static function getURl(string $uuid) : string
+    {
+        $urlParts = parse_url(GetFiscalReceiptEndpoint::getUrl()."?".GetFiscalReceiptEndpoint::ORDER_UUID_PARAM."=".$uuid);
+
+        return $urlParts["host"].$urlParts["path"]."?".$urlParts["query"];
     }
 }
