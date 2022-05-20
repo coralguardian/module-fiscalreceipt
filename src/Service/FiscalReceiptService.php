@@ -2,16 +2,18 @@
 
 namespace D4rk0snet\FiscalReceipt\Service;
 
+use D4rk0snet\Donation\Entity\DonationEntity;
 use D4rk0snet\FiscalReceipt\Endpoint\GetFiscalReceiptEndpoint;
 use D4rk0snet\FiscalReceipt\Model\FiscalReceiptModel;
 use D4rk0snet\FiscalReceipt\Plugin;
 use Hyperion\Api2pdf\Service\Api2PdfService;
+use Hyperion\Doctrine\Service\DoctrineService;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
 class FiscalReceiptService
 {
-    public static function createReceipt(FiscalReceiptModel $fiscalReceiptModel, bool $incrementFiscalReceiptNumber) : string
+    public static function createReceipt(FiscalReceiptModel $fiscalReceiptModel, DonationEntity $order) : string
     {
         // Generate fiscal receipt
         $loader = new FilesystemLoader(__DIR__."/../Template");
@@ -26,7 +28,10 @@ class FiscalReceiptService
         );
 
         // Incrémentation du code des reçus si on l'a généré
-        if($incrementFiscalReceiptNumber) {
+        if(!$order->getFiscalReceiptNumber()) {
+            $order->setFiscalReceiptNumber(Plugin::NEXT_RECEIPT_NUM);
+            DoctrineService::getEntityManager()->flush();
+
             update_option(Plugin::NEXT_RECEIPT_NUM, (int)get_option(Plugin::NEXT_RECEIPT_NUM) + 1);
         }
 

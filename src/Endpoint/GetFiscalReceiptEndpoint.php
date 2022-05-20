@@ -42,7 +42,6 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
             $customer = $order->getCustomer();
             $nf2 = new NumberFormatter(Language::FR->value, NumberFormatter::SPELLOUT);
 
-
             if ($customer instanceof IndividualCustomerEntity) {
                 $fiscalReceiptModel = new FiscalReceiptModel(
                     articles: '200, 238 bis et 978',
@@ -76,7 +75,7 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
                 );
             }
 
-            $fileURL = FiscalReceiptService::createReceipt($fiscalReceiptModel, is_null($order->getFiscalReceiptNumber()));
+            $fileURL = FiscalReceiptService::createReceipt($fiscalReceiptModel, $order);
         } catch (\Exception $exception) {
             return APIManagement::APIError("Not found",404);
         }
