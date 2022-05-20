@@ -2,15 +2,18 @@
 
 namespace D4rk0snet\FiscalReceipt\Endpoint;
 
-use D4rk0snet\Adoption\Entity\AdoptionEntity;
 use D4rk0snet\Coralguardian\Entity\CompanyCustomerEntity;
 use D4rk0snet\Coralguardian\Entity\IndividualCustomerEntity;
+use D4rk0snet\Coralguardian\Enums\CustomerType;
+use D4rk0snet\Coralguardian\Enums\Language;
 use D4rk0snet\Donation\Entity\DonationEntity;
+use D4rk0snet\FiscalReceipt\Plugin;
 use D4rk0snet\FiscalReceipt\Service\FiscalReceiptService;
 use D4rk0snet\FiscalReceipt\Model\FiscalReceiptModel;
 use Hyperion\Doctrine\Service\DoctrineService;
 use Hyperion\RestAPI\APIEnpointAbstract;
 use Hyperion\RestAPI\APIManagement;
+use NumberFormatter;
 use WP_REST_Request;
 use WP_REST_Response;
 
@@ -26,7 +29,6 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
         }
 
         try {
-            // @todo : faire la recherche ensuite dans les dons si non trouvé
             /** @var DonationEntity $order */
             $order = DoctrineService::getEntityManager()->getRepository(DonationEntity::class)->find($orderUUID);
             if ($order === null) {
@@ -34,18 +36,20 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
             }
 
             $customer = $order->getCustomer();
+            $nf2 = new NumberFormatter(Language::FR->value, NumberFormatter::SPELLOUT);
+
 
             if ($customer instanceof IndividualCustomerEntity) {
                 $fiscalReceiptModel = new FiscalReceiptModel(
-                    articles: '45/407',
-                    receiptCode: 1,
+                    articles: '200, 238 bis et 978',
+                    receiptCode: self::createReceiptCode(),
                     customerFullName: $customer->getFirstname() . " " . $customer->getLastname(),
                     customerAddress: $customer->getAddress(),
-                    customerPostalCode: "xxx",
+                    customerPostalCode: $customer->getPostalCode(),
                     customerCity: $customer->getCity(),
-                    fiscalReductionPercentage: 60,
-                    paymentMethod: 'Carte bancaire',
-                    priceWord: "soixante",
+                    fiscalReductionPercentage: CustomerType::INDIVIDUAL->getFiscalReduction(),
+                    paymentMethod: $order->getPaymentMethod()->getMethodName(),
+                    priceWord: $nf2->format($order->getAmount()),
                     price: $order->getAmount(),
                     date: new \DateTime(),
                     orderUuid: $orderUUID
@@ -53,15 +57,15 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
             } else {
                 /** @var CompanyCustomerEntity $customer */
                 $fiscalReceiptModel = new FiscalReceiptModel(
-                    articles: '45/407',
-                    receiptCode: 1,
+                    articles: '200, 238 bis et 885-0VBISA',
+                    receiptCode: self::createReceiptCode(),
                     customerFullName: $customer->getCompanyName(),
                     customerAddress: $customer->getAddress(),
-                    customerPostalCode: "xxx",
+                    customerPostalCode: $customer->getPostalCode(),
                     customerCity: $customer->getCity(),
-                    fiscalReductionPercentage: 60,
-                    paymentMethod: 'Carte bancaire',
-                    priceWord: "soixante",
+                    fiscalReductionPercentage: CustomerType::COMPANY->getFiscalReduction(),
+                    paymentMethod: $order->getPaymentMethod()->getMethodName(),
+                    priceWord: $nf2->format($order->getAmount()),
                     price: $order->getAmount(),
                     date: new \DateTime(),
                     orderUuid: $orderUUID
@@ -74,6 +78,11 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
         }
 
         return APIManagement::APIClientDownloadWithURL($fileURL, "receipt-coralguardian-".$fiscalReceiptModel->getReceiptCode().".pdf");
+    }
+
+    private static function createReceiptCode(int $nextReceiptNumber = null) : string
+    {
+        return "CG2-" . (new \DateTime())->format("Y") . "-" . str_pad($nextReceiptNumber ?? (int) get_option(Plugin::NEXT_RECEIPT_NUM), 10, "0", STR_PAD_LEFT);
     }
 
     public static function getEndpoint(): string

@@ -9,4 +9,7 @@
  * Author URI:
  * Licence: GPLv2
  */
+register_activation_hook(__FILE__, '\D4rk0snet\FiscalReceipt\Plugin::install');
+register_uninstall_hook(__FILE__, '\D4rk0snet\FiscalReceipt\Plugin::uninstall');
+
 add_action('plugins_loaded', 'D4rk0snet\FiscalReceipt\Plugin::launchActions');
