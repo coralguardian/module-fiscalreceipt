@@ -10,7 +10,7 @@ use Twig\Loader\FilesystemLoader;
 
 class FiscalReceiptService
 {
-    public static function createReceipt(FiscalReceiptModel $fiscalReceiptModel) : string
+    public static function createReceipt(FiscalReceiptModel $fiscalReceiptModel, bool $incrementFiscalReceiptNumber) : string
     {
         // Generate fiscal receipt
         $loader = new FilesystemLoader(__DIR__."/../Template");
@@ -24,8 +24,10 @@ class FiscalReceiptService
             ]
         );
 
-        // Incrémentation du code des reçus
-        update_option(Plugin::NEXT_RECEIPT_NUM, (int) get_option(Plugin::NEXT_RECEIPT_NUM) + 1);
+        // Incrémentation du code des reçus si on l'a généré
+        if($incrementFiscalReceiptNumber) {
+            update_option(Plugin::NEXT_RECEIPT_NUM, (int)get_option(Plugin::NEXT_RECEIPT_NUM) + 1);
+        }
 
         return Api2PdfService::convertHtmlToPdf(
             $html,
