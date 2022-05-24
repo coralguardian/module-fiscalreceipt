@@ -3,6 +3,7 @@
 namespace D4rk0snet\FiscalReceipt\Endpoint;
 
 use D4rk0snet\Coralguardian\Entity\CompanyCustomerEntity;
+use D4rk0snet\Coralguardian\Entity\CustomerEntity;
 use D4rk0snet\Coralguardian\Entity\IndividualCustomerEntity;
 use D4rk0snet\Coralguardian\Enums\CustomerType;
 use D4rk0snet\Coralguardian\Enums\Language;
@@ -42,7 +43,7 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
             $customer = $order->getCustomer();
             $nf2 = new NumberFormatter(Language::FR->value, NumberFormatter::SPELLOUT);
 
-            if ($customer instanceof IndividualCustomerEntity) {
+            if ($customer instanceof CustomerEntity) {
                 $fiscalReceiptModel = new FiscalReceiptModel(
                     articles: '200, 238 bis et 978',
                     receiptCode: self::createReceiptCode($order->getFiscalReceiptNumber()),
