@@ -3,7 +3,6 @@
 namespace D4rk0snet\FiscalReceipt\Endpoint;
 
 use D4rk0snet\Coralguardian\Entity\CompanyCustomerEntity;
-use D4rk0snet\Coralguardian\Entity\CustomerEntity;
 use D4rk0snet\Coralguardian\Enums\CustomerType;
 use D4rk0snet\Coralguardian\Enums\Language;
 use D4rk0snet\Donation\Entity\DonationEntity;
@@ -42,22 +41,7 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
             $customer = $order->getCustomer();
             $nf2 = new NumberFormatter(Language::FR->value, NumberFormatter::SPELLOUT);
 
-            if ($customer instanceof CustomerEntity) {
-                $fiscalReceiptModel = new FiscalReceiptModel(
-                    articles: '200, 238 bis et 978',
-                    receiptCode: self::createReceiptCode($order->getFiscalReceiptNumber()),
-                    customerFullName: $customer->getFirstname() . " " . $customer->getLastname(),
-                    customerAddress: $customer->getAddress(),
-                    customerPostalCode: $customer->getPostalCode(),
-                    customerCity: $customer->getCity(),
-                    fiscalReductionPercentage: CustomerType::INDIVIDUAL->getFiscalReduction(),
-                    paymentMethod: $order->getPaymentMethod()->getMethodName(),
-                    priceWord: $nf2->format($order->getAmount()),
-                    price: $order->getAmount(),
-                    date: new \DateTime(),
-                    orderUuid: $orderUUID
-                );
-            } else {
+            if ($customer instanceof CompanyCustomerEntity) {
                 /** @var CompanyCustomerEntity $customer */
                 $fiscalReceiptModel = new FiscalReceiptModel(
                     articles: '200, 238 bis et 885-0VBISA',
@@ -67,6 +51,21 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
                     customerPostalCode: $customer->getPostalCode(),
                     customerCity: $customer->getCity(),
                     fiscalReductionPercentage: CustomerType::COMPANY->getFiscalReduction(),
+                    paymentMethod: $order->getPaymentMethod()->getMethodName(),
+                    priceWord: $nf2->format($order->getAmount()),
+                    price: $order->getAmount(),
+                    date: new \DateTime(),
+                    orderUuid: $orderUUID
+                );
+            } else {
+                $fiscalReceiptModel = new FiscalReceiptModel(
+                    articles: '200, 238 bis et 978',
+                    receiptCode: self::createReceiptCode($order->getFiscalReceiptNumber()),
+                    customerFullName: $customer->getFirstname() . " " . $customer->getLastname(),
+                    customerAddress: $customer->getAddress(),
+                    customerPostalCode: $customer->getPostalCode(),
+                    customerCity: $customer->getCity(),
+                    fiscalReductionPercentage: CustomerType::INDIVIDUAL->getFiscalReduction(),
                     paymentMethod: $order->getPaymentMethod()->getMethodName(),
                     priceWord: $nf2->format($order->getAmount()),
                     price: $order->getAmount(),
