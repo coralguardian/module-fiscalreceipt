@@ -85,7 +85,7 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
         readfile($fileURL);
-        exit;
+
 //        return APIManagement::APIClientDownloadWithURL($fileURL, "receipt-coralguardian-".$fiscalReceiptModel->getReceiptCode().".pdf");
     }
 
