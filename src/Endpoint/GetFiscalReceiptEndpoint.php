@@ -79,7 +79,14 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
             return APIManagement::APIError("Not found",404);
         }
 
-        return APIManagement::APIClientDownloadWithURL($fileURL, "receipt-coralguardian-".$fiscalReceiptModel->getReceiptCode().".pdf");
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename="receipt-coralguardian-'.$fiscalReceiptModel->getReceiptCode().'.pdf"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        readfile($fileURL);
+        exit;
+//        return APIManagement::APIClientDownloadWithURL($fileURL, "receipt-coralguardian-".$fiscalReceiptModel->getReceiptCode().".pdf");
     }
 
     private static function createReceiptCode(int $nextReceiptNumber = null) : string
