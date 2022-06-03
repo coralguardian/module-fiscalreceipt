@@ -45,8 +45,6 @@ class FiscalReceiptService
 
     public static function getURl(string $uuid) : string
     {
-        $urlParts = parse_url(GetFiscalReceiptEndpoint::getUrl()."?".GetFiscalReceiptEndpoint::ORDER_UUID_PARAM."=".$uuid);
-
-        return $urlParts["host"].$urlParts["path"]."?".$urlParts["query"];
+        return GetFiscalReceiptEndpoint::getUrl()."?".GetFiscalReceiptEndpoint::ORDER_UUID_PARAM."=".$uuid;
     }
 }
