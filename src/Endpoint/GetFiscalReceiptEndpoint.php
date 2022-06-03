@@ -54,7 +54,7 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
                     paymentMethod: $order->getPaymentMethod()->getMethodName(),
                     priceWord: $nf2->format($order->getAmount()),
                     price: $order->getAmount(),
-                    date: new \DateTime(),
+                    date: $order->getDate(),
                     orderUuid: $orderUUID
                 );
             } else {
@@ -69,7 +69,7 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
                     paymentMethod: $order->getPaymentMethod()->getMethodName(),
                     priceWord: $nf2->format($order->getAmount()),
                     price: $order->getAmount(),
-                    date: new \DateTime(),
+                    date: $order->getDate(),
                     orderUuid: $orderUUID
                 );
             }
