@@ -73,7 +73,7 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
                     orderUuid: $orderUUID
                 );
             }
-
+            // @todo: prévoir un zip avec tous les reçus fiscaux en cas de don récurrent
             $fileURL = FiscalReceiptService::createReceipt($fiscalReceiptModel, $order);
         } catch (\Exception $exception) {
             return APIManagement::APIError("Not found",404);
