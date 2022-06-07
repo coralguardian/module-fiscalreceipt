@@ -34,57 +34,16 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
                 return APIManagement::APIError('Order not found', 404);
             }
 
-            if(!$order->isPaid()) {
+            if (!$order->isPaid()) {
                 return APIManagement::APIError('Order not paid, can not generate fiscal receipt', 400);
             }
 
-            $customer = $order->getCustomer();
-            $nf2 = new NumberFormatter(Language::FR->value, NumberFormatter::SPELLOUT);
-
-            if ($customer instanceof CompanyCustomerEntity) {
-                /** @var CompanyCustomerEntity $customer */
-                $fiscalReceiptModel = new FiscalReceiptModel(
-                    articles: '200, 238 bis et 885-0VBISA',
-                    receiptCode: self::createReceiptCode(),
-                    customerFullName: $customer->getCompanyName(),
-                    customerAddress: $customer->getAddress(),
-                    customerPostalCode: $customer->getPostalCode(),
-                    customerCity: $customer->getCity(),
-                    fiscalReductionPercentage: CustomerType::COMPANY->getFiscalReduction(),
-                    paymentMethod: $order->getPaymentMethod()->getMethodName(),
-                    priceWord: $nf2->format($order->getAmount()),
-                    price: $order->getAmount(),
-                    date: $order->getDate(),
-                    orderUuid: $orderUUID
-                );
-            } else {
-                $fiscalReceiptModel = new FiscalReceiptModel(
-                    articles: '200, 238 bis et 978',
-                    receiptCode: self::createReceiptCode($order->getFiscalReceiptNumber()),
-                    customerFullName: $customer->getFirstname() . " " . $customer->getLastname(),
-                    customerAddress: $customer->getAddress(),
-                    customerPostalCode: $customer->getPostalCode(),
-                    customerCity: $customer->getCity(),
-                    fiscalReductionPercentage: CustomerType::INDIVIDUAL->getFiscalReduction(),
-                    paymentMethod: $order->getPaymentMethod()->getMethodName(),
-                    priceWord: $nf2->format($order->getAmount()),
-                    price: $order->getAmount(),
-                    date: $order->getDate(),
-                    orderUuid: $orderUUID
-                );
-            }
-            // @todo: prévoir un zip avec tous les reçus fiscaux en cas de don récurrent
-            $fileURL = FiscalReceiptService::createReceipt($fiscalReceiptModel, $order);
+            $fileURL = FiscalReceiptService::generateFiscalReceipts($order);
         } catch (\Exception $exception) {
-            return APIManagement::APIError("Not found",404);
+            return APIManagement::APIError("Not found", 404);
         }
 
-        return APIManagement::APIClientDownloadWithURL($fileURL, "receipt-coralguardian-".$fiscalReceiptModel->getReceiptCode().".pdf", "inline");
-    }
-
-    private static function createReceiptCode(int $nextReceiptNumber = null) : string
-    {
-        return "CG2-" . (new \DateTime())->format("Y") . "-" . str_pad($nextReceiptNumber ?? (int) get_option(Plugin::NEXT_RECEIPT_NUM), 10, "0", STR_PAD_LEFT);
+        return APIManagement::APIClientDownloadWithURL($fileURL, "receipt-coralguardian-" . $order->getFiscalReceiptNumber() . ".pdf", "inline");
     }
 
     public static function getEndpoint(): string
