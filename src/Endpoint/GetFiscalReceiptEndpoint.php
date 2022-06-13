@@ -76,7 +76,7 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
             // @todo: prévoir un zip avec tous les reçus fiscaux en cas de don récurrent
             $fileURL = FiscalReceiptService::createReceipt($fiscalReceiptModel, $order);
         } catch (\Exception $exception) {
-            return APIManagement::APIError("Not found",404);
+            return APIManagement::APIError($exception->getMessage(),404);
         }
 
         return APIManagement::APIClientDownloadWithURL($fileURL, "receipt-coralguardian-".$fiscalReceiptModel->getReceiptCode().".pdf", "inline");
