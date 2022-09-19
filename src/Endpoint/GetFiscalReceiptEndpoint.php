@@ -2,7 +2,7 @@
 
 namespace D4rk0snet\FiscalReceipt\Endpoint;
 
-use D4rk0snet\Coralguardian\Entity\CompanyCustomerEntity;
+use D4rk0snet\CoralCustomer\Entity\CompanyCustomerEntity;
 use D4rk0snet\Coralguardian\Enums\CustomerType;
 use D4rk0snet\Coralguardian\Enums\Language;
 use D4rk0snet\Donation\Entity\DonationEntity;
