@@ -28,8 +28,8 @@
     ],
     "require": {
         "twig/twig": "^3.3",
-        "hyperion/api2pdf": "dev-dev",
-        "hyperion/restapi": "dev-dev",
+        "hyperion/api2pdf": "1.*",
+        "hyperion/restapi": "1.*",
         "ext-intl": "*"
     }
 }
