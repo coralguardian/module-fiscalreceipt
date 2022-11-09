@@ -2,6 +2,8 @@
 
 namespace D4rk0snet\FiscalReceipt\Endpoint;
 
+use D4rk0snet\Adoption\Entity\AdoptionEntity;
+use D4rk0snet\Adoption\Entity\GiftAdoption;
 use D4rk0snet\CoralCustomer\Entity\CompanyCustomerEntity;
 use D4rk0snet\CoralCustomer\Enum\CustomerType;
 use D4rk0snet\Coralguardian\Enums\Language;
@@ -40,6 +42,10 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
 
             $customer = $order->getCustomer();
             $nf2 = new NumberFormatter(Language::FR->value, NumberFormatter::SPELLOUT);
+            $amount = $order->getAmount();
+            if($order instanceof AdoptionEntity) {
+                $amount += (int) $order->getCustomAmount();
+            }
 
             if ($customer instanceof CompanyCustomerEntity) {
                 /** @var CompanyCustomerEntity $customer */
@@ -53,7 +59,7 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
                     fiscalReductionPercentage: CustomerType::COMPANY->getFiscalReduction(),
                     paymentMethod: $order->getPaymentMethod()->getMethodName(),
                     priceWord: $nf2->format($order->getAmount()),
-                    price: $order->getAmount(),
+                    price: $amount,
                     date: $order->getDate(),
                     orderUuid: $orderUUID
                 );
@@ -68,7 +74,7 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
                     fiscalReductionPercentage: CustomerType::INDIVIDUAL->getFiscalReduction(),
                     paymentMethod: $order->getPaymentMethod()->getMethodName(),
                     priceWord: $nf2->format($order->getAmount()),
-                    price: $order->getAmount(),
+                    price: $amount,
                     date: $order->getDate(),
                     orderUuid: $orderUUID
                 );
