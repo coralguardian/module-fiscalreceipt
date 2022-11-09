@@ -44,7 +44,7 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
             $nf2 = new NumberFormatter(Language::FR->value, NumberFormatter::SPELLOUT);
             $amount = $order->getAmount();
             if($order instanceof AdoptionEntity) {
-                $amount += (int) $order->getCustomAmount();
+                $amount = $order->getCustomAmount() ?? (int) $order->getAmount();
             }
 
             if ($customer instanceof CompanyCustomerEntity) {
@@ -52,10 +52,10 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
                 $fiscalReceiptModel = new FiscalReceiptModel(
                     articles: '200, 238 bis et 885-0VBISA',
                     receiptCode: self::createReceiptCode(),
-                    customerFullName: $customer->getCompanyName(),
-                    customerAddress: $customer->getAddress(),
-                    customerPostalCode: $customer->getPostalCode(),
-                    customerCity: $customer->getCity(),
+                    customerFullName: $order->getFirstName()." ".$order->getLastName(),
+                    customerAddress: $order->getAddress(),
+                    customerPostalCode: $order->getPostalCode(),
+                    customerCity: $order->getCity(),
                     fiscalReductionPercentage: CustomerType::COMPANY->getFiscalReduction(),
                     paymentMethod: $order->getPaymentMethod()->getMethodName(),
                     priceWord: $nf2->format($order->getAmount()),
@@ -67,10 +67,10 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
                 $fiscalReceiptModel = new FiscalReceiptModel(
                     articles: '200, 238 bis et 978',
                     receiptCode: self::createReceiptCode($order->getFiscalReceiptNumber()),
-                    customerFullName: $customer->getFirstname() . " " . $customer->getLastname(),
-                    customerAddress: $customer->getAddress(),
-                    customerPostalCode: $customer->getPostalCode(),
-                    customerCity: $customer->getCity(),
+                    customerFullName: $order->getFirstName()." ".$order->getLastName(),
+                    customerAddress: $order->getAddress(),
+                    customerPostalCode: $order->getPostalCode(),
+                    customerCity: $order->getCity(),
                     fiscalReductionPercentage: CustomerType::INDIVIDUAL->getFiscalReduction(),
                     paymentMethod: $order->getPaymentMethod()->getMethodName(),
                     priceWord: $nf2->format($order->getAmount()),
