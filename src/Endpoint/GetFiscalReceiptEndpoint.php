@@ -50,7 +50,7 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
             if ($customer instanceof CompanyCustomerEntity) {
                 /** @var CompanyCustomerEntity $customer */
                 $fiscalReceiptModel = new FiscalReceiptModel(
-                    articles: '200, 238 bis et 885-0VBISA',
+                    articles: '200, 238 bis et 978',
                     receiptCode: self::createReceiptCode(),
                     customerFullName: $order->getFirstName()." ".$order->getLastName(),
                     customerAddress: $order->getAddress(),
