@@ -20,4 +20,10 @@ class Plugin
     {
         do_action(\Hyperion\RestAPI\Plugin::ADD_API_ENDPOINT_ACTION, new \D4rk0snet\FiscalReceipt\Endpoint\GetFiscalReceiptEndpoint());
     }
+
+    public static function addCliCommand()
+    {
+        WP_CLI::add_command('send_annual_fiscal_receipts',
+            ['\D4rk0snet\FiscalReceipt\Command\SendAnnualFiscalReceipt','runCommand']);
+    }
 }
