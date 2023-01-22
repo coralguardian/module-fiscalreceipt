@@ -2,6 +2,8 @@
 
 namespace D4rk0snet\FiscalReceipt;
 
+use WP_CLI;
+
 class Plugin
 {
     public const NEXT_RECEIPT_NUM = 'next_fiscal_receipt_num';

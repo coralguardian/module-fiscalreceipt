@@ -13,6 +13,7 @@ use D4rk0snet\FiscalReceipt\Service\FiscalReceiptService;
 use Hyperion\Doctrine\Service\DoctrineService;
 use Hyperion\Stripe\Service\StripeService;
 use NumberFormatter;
+use stdClass;
 use Stripe\Invoice;
 
 class SendAnnualFiscalReceipt
@@ -48,10 +49,10 @@ class SendAnnualFiscalReceipt
                     if(!array_key_exists($invoice->customer_email, $invoices)) {
                         $invoices[$invoice->customer_email] = (object) [
                             'amount' => 0,
-                            'fullName' => $invoice->customer->name,
-                            'address' => $info[1],
-                            'postCode' => $info[2],
-                            'city' => $info[3]
+                            'fullName' => trim($invoice->customer->name),
+                            'address' => trim($invoice->customer->address->line1."\n".$invoice->customer->address->line2),
+                            'postCode' => current($info[2]),
+                            'city' => trim($invoice->customer->address->city)
                         ];
 
                     }
@@ -63,12 +64,15 @@ class SendAnnualFiscalReceipt
 
             $nf2 = new NumberFormatter(Language::FR->value, NumberFormatter::SPELLOUT);
 
-
             // Récupération des customers
-            foreach($searchResult as $email => $info) {
+            foreach($invoices as $email => $info) {
                 $customer = DoctrineService::getEntityManager()->getRepository(CustomerEntity::class)->findOneBy(['email' => $email]);
                 if (null === $customer) {
                     var_dump('Customer inconnu : ' . $email);
+                    continue;
+                }
+
+                if($info->amount === 0) {
                     continue;
                 }
 
