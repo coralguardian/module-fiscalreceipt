@@ -4,7 +4,7 @@ namespace D4rk0snet\FiscalReceipt\Model;
 
 class FiscalReceiptModel
 {
-    private string $orderUuid;
+    private ?string $orderUuid;
     private string $articles;
     private string $receiptCode;
     private string $customerFullName;
@@ -29,7 +29,7 @@ class FiscalReceiptModel
         string    $priceWord,
         float     $price,
         \DateTime $date,
-        string $orderUuid
+        ?string $orderUuid
     ) {
         $this->articles = $articles;
         $this->receiptCode = $receiptCode;
