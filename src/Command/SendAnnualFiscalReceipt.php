@@ -7,6 +7,8 @@ use D4rk0snet\CoralCustomer\Enum\CustomerType;
 use D4rk0snet\Coralguardian\Enums\Language;
 use D4rk0snet\Coralguardian\Event\SubscriptionSummary;
 use D4rk0snet\CoralOrder\Enums\PaymentMethod;
+use D4rk0snet\Donation\Entity\DonationEntity;
+use D4rk0snet\Donation\Entity\RecurringDonationEntity;
 use D4rk0snet\FiscalReceipt\Model\FiscalReceiptModel;
 use D4rk0snet\FiscalReceipt\Plugin;
 use D4rk0snet\FiscalReceipt\Service\FiscalReceiptService;
@@ -43,20 +45,56 @@ class SendAnnualFiscalReceipt
 
                 foreach ($invoicesFiltered as $invoice) {
                     preg_match_all('/(.*?)(\d{5})(.*)/ms',$invoice->customer_address, $info);
-                    if($invoice->customer->address->country !== "France") {
-                        continue;
-                    }
-                    if(!array_key_exists($invoice->customer_email, $invoices)) {
-                        $invoices[$invoice->customer_email] = (object) [
-                            'amount' => 0,
-                            'fullName' => trim($invoice->customer->name),
-                            'address' => trim($invoice->customer->address->line1."\n".$invoice->customer->address->line2),
-                            'postCode' => current($info[2]),
-                            'city' => trim($invoice->customer->address->city)
-                        ];
+                    if($invoice->customer->address === null) {
+                        /** @var CustomerEntity $customer */
+                        $customer = DoctrineService::getEntityManager()->getRepository(CustomerEntity::class)->findOneBy(['email' => $invoice->customer_email]);
+                        if($customer === null) {
+                            var_dump("/!\ Impossible de trouver l'utilisateur : ".$invoice->customer_email);
+                            continue;
+                        }
+                        /** @var DonationEntity[] $donations */
+                        $donations = DoctrineService::getEntityManager()->getRepository(RecurringDonationEntity::class)->findBy([
+                            'customer' => $customer->getUuid(),
+                        ]);
 
+                        if(count($donations) === 0) {
+                            var_dump("/!\ Impossible de trouver un don pour : ".$invoice->customer_email);
+                            continue;
+                        }
+
+                        if(strtolower(trim($donations[0]->getCountry())) !== "france") {
+                            var_dump("Reçu non envoyé car $invoice->customer_email n'est pas en France");
+                            continue;
+                        }
+
+                        if(!array_key_exists($invoice->customer_email, $invoices)) {
+                            $invoices[$invoice->customer_email] = (object) [
+                                'amount' => 0,
+                                'fullName' => trim($donations[0]->getFirstName()." ".$donations[0]->getLastName()),
+                                'address' => trim($donations[0]->getAddress()),
+                                'postCode' => $donations[0]->getPostalCode(),
+                                'city' => trim($donations[0]->getCity())
+                            ];
+                        }
+
+                        $invoices[$invoice->customer_email]->amount += $invoice->amount_paid / 100;
+                    } else {
+                        if(strtolower(trim($invoice->customer->address->country)) !== "france") {
+                            var_dump("Reçu non envoyé car $invoice->customer_email n'est pas en France");
+                            continue;
+                        }
+                        if(!array_key_exists($invoice->customer_email, $invoices)) {
+                            $invoices[$invoice->customer_email] = (object) [
+                                'amount' => 0,
+                                'fullName' => trim($invoice->customer->name),
+                                'address' => trim($invoice->customer->address->line1."\n".$invoice->customer->address->line2),
+                                'postCode' => current($info[2]),
+                                'city' => trim($invoice->customer->address->city)
+                            ];
+                        }
+                        $invoices[$invoice->customer_email]->amount += $invoice->amount_paid / 100;
                     }
-                    $invoices[$invoice->customer_email]->amount += $invoice->amount_paid / 100;
+
                 }
 
                 $next_page = $searchResult->next_page;
@@ -68,11 +106,12 @@ class SendAnnualFiscalReceipt
             foreach($invoices as $email => $info) {
                 $customer = DoctrineService::getEntityManager()->getRepository(CustomerEntity::class)->findOneBy(['email' => $email]);
                 if (null === $customer) {
-                    var_dump('Customer inconnu : ' . $email);
+                    var_dump('/!\ Customer inconnu : ' . $email);
                     continue;
                 }
 
                 if($info->amount === 0) {
+                    var_dump("Reçu non envoyé car $email à un montant à 0");
                     continue;
                 }
 
@@ -111,6 +150,7 @@ class SendAnnualFiscalReceipt
 
                 $fileURL = FiscalReceiptService::createReceipt($fiscalReceiptModel, null);
                 SubscriptionSummary::sendEvent(email: $email, fiscalReceiptUrl: $fileURL);
+                var_dump("Certificat envoyé pour $email.");
             }
         } catch (\Exception $exception) {
             var_dump($exception->getMessage());
