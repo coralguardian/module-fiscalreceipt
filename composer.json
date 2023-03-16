@@ -8,18 +8,6 @@
             "D4rk0snet\\FiscalReceipt\\": "src/"
         }
     },
-    "repositories": [
-        {
-            "type" : "vcs",
-            "url": "git@github.com:ds-hyperion/api2pdf.git",
-            "no-api": true
-        },
-        {
-            "type" : "vcs",
-            "url": "git@github.com:ds-hyperion/restapi.git",
-            "no-api": true
-        }
-    ],
     "authors": [
         {
             "name": "Grégory COLLIN",
@@ -28,8 +16,8 @@
     ],
     "require": {
         "twig/twig": "^3.3",
-        "hyperion/api2pdf": "dev-dev",
-        "wordpress-hyperion/restapi": "dev-dev",
+        "wordpress-hyperion/api2pdf": "^1.0",
+        "wordpress-hyperion/restapi": "^1.0",
         "ext-intl": "*"
     }
 }
