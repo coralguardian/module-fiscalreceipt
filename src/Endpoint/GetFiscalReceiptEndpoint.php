@@ -61,7 +61,8 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
                     priceWord: $nf2->format($order->getAmount()),
                     price: $amount,
                     date: $order->getDate(),
-                    orderUuid: $orderUUID
+                    orderUuid: $orderUUID,
+                    siret: $customer->getSiret()
                 );
             } else {
                 $fiscalReceiptModel = new FiscalReceiptModel(

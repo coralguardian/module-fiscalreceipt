@@ -107,7 +107,9 @@
             <p class="bold">{{ data.customerFullName }}</p>
             <p>{{ data.customerAddress }}</p>
             <p>{{ data.customerPostalCode }} {{ data.customerCity }}</p>
-
+            {%  if data.siret %}
+                <p>SIRET: {{ data.siret }}</p>
+            {%  endif %}
         </div>
     </div>
 
@@ -117,6 +119,9 @@
             <p class="bold">{{ data.customerFullName }}</p>
             <p>{{ data.customerAddress }}</p>
             <p>{{ data.customerPostalCode }} {{ data.customerCity }}</p>
+            {%  if data.siret %}
+                <p>SIRET: {{ data.siret }}</p>
+            {%  endif %}
         </div>
     </div>
 
