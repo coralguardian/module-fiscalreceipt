@@ -16,7 +16,7 @@ class FiscalReceiptModel
     private float $price;
     private string $paymentMethod;
     private \DateTime $date;
-    private string $siret;
+    private ?string $siret;
 
     public function __construct(
         string    $articles,
