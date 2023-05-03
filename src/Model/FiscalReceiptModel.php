@@ -8,7 +8,7 @@ class FiscalReceiptModel
     private string $articles;
     private string $receiptCode;
     private string $customerFullName;
-    private string $companyName;
+    private ?string $companyName;
     private string $customerAddress;
     private string $customerPostalCode;
     private string $customerCity;
