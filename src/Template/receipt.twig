@@ -104,11 +104,12 @@
 
     <div class="row mt-2">
         <div class="col-7"></div><div class="col-5">
+            <p class="bold">{{ data.companyName }}</p>
             <p class="bold">{{ data.customerFullName }}</p>
             <p>{{ data.customerAddress }}</p>
             <p>{{ data.customerPostalCode }} {{ data.customerCity }}</p>
             {%  if data.siret %}
-                <p>SIRET: {{ data.siret }}</p>
+                <p>Siret: {{ data.siret }}</p>
             {%  endif %}
         </div>
     </div>
@@ -116,11 +117,12 @@
     <div class="row mt-4">
         <div class="col-3">
             <p class="bold underline">DONATEUR</p>
+            <p class="bold">{{ data.companyName }}</p>
             <p class="bold">{{ data.customerFullName }}</p>
             <p>{{ data.customerAddress }}</p>
             <p>{{ data.customerPostalCode }} {{ data.customerCity }}</p>
             {%  if data.siret %}
-                <p>SIRET: {{ data.siret }}</p>
+                <p>Siret: {{ data.siret }}</p>
             {%  endif %}
         </div>
     </div>

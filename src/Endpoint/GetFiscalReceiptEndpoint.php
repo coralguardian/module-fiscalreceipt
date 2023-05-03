@@ -62,6 +62,7 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
                     price: $amount,
                     date: $order->getDate(),
                     orderUuid: $orderUUID,
+                    companyName: $customer->getCompanyName(),
                     siret: $customer->getSiret()
                 );
             } else {
