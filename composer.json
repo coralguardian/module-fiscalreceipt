@@ -16,8 +16,8 @@
     ],
     "require": {
         "twig/twig": "^3.3",
-        "wordpress-hyperion/api2pdf": "^1.0",
-        "wordpress-hyperion/restapi": "^1.0",
+        "wordpress-hyperion/api2pdf": "1.*",
+        "wordpress-hyperion/restapi": "1.*",
         "ext-intl": "*"
     }
 }
