@@ -51,7 +51,7 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
                 /** @var CompanyCustomerEntity $customer */
                 $fiscalReceiptModel = new FiscalReceiptModel(
                     articles: '200, 238 bis et 978',
-                    receiptCode: self::createReceiptCode(),
+                    receiptCode: self::createReceiptCode($order->getFiscalReceiptNumber()),
                     customerFullName: $order->getFirstName()." ".$order->getLastName(),
                     customerAddress: $order->getAddress(),
                     customerPostalCode: $order->getPostalCode(),
@@ -61,7 +61,9 @@ class GetFiscalReceiptEndpoint extends APIEnpointAbstract
                     priceWord: $nf2->format($order->getAmount()),
                     price: $amount,
                     date: $order->getDate(),
-                    orderUuid: $orderUUID
+                    orderUuid: $orderUUID,
+                    companyName: $customer->getCompanyName(),
+                    siret: $customer->getSiret()
                 );
             } else {
                 $fiscalReceiptModel = new FiscalReceiptModel(

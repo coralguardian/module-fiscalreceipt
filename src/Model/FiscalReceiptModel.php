@@ -8,6 +8,7 @@ class FiscalReceiptModel
     private string $articles;
     private string $receiptCode;
     private string $customerFullName;
+    private ?string $companyName;
     private string $customerAddress;
     private string $customerPostalCode;
     private string $customerCity;
@@ -16,6 +17,7 @@ class FiscalReceiptModel
     private float $price;
     private string $paymentMethod;
     private \DateTime $date;
+    private ?string $siret;
 
     public function __construct(
         string    $articles,
@@ -29,7 +31,9 @@ class FiscalReceiptModel
         string    $priceWord,
         float     $price,
         \DateTime $date,
-        ?string $orderUuid
+        ?string $orderUuid,
+        ?string $companyName = null,
+        ?string $siret = null
     ) {
         $this->articles = $articles;
         $this->receiptCode = $receiptCode;
@@ -43,6 +47,8 @@ class FiscalReceiptModel
         $this->date = $date;
         $this->paymentMethod = $paymentMethod;
         $this->orderUuid = $orderUuid;
+        $this->siret = $siret;
+        $this->companyName = $companyName;
     }
 
     public function toArray() : array
@@ -58,7 +64,9 @@ class FiscalReceiptModel
             'priceWord' => $this->priceWord,
             'price' => $this->price,
             'paymentMethod' => $this->paymentMethod,
-            'date' => $this->date->format("d-m-Y")
+            'date' => $this->date->format("d-m-Y"),
+            'siret' => $this->siret,
+            'companyName' => $this->companyName
         ];
     }
 
